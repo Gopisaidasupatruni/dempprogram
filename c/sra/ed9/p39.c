@@ -1,0 +1,9 @@
+#include<stdio.h>
+int main()
+{
+unsigned int x=-1; int y;
+y = ~0; if(x== y)
+printf("same");
+else
+printf("not same");
+}
