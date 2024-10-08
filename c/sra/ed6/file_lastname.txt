@@ -1,15 +1,15 @@
 name: gopi
 last name: dasu
-age: 22
-salary: 333.00
+age: 18
+salary: 12000.00
 
-name: sai
-last name: taksi
-age: 33
-salary: 222.00
+name: rakesh
+last name: peddaruvu
+age: 19
+salary: 130000.00
 
-name: ravi
+name: ayesha
 last name: shaik
-age: 88
-salary: 111.00
+age: 25
+salary: 140000.00
 

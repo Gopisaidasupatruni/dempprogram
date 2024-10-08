@@ -10,7 +10,7 @@
 /* MACRO DEFINITIONS */
 #define MAX 100
 /*structure*/
-struct person
+typedef struct person
 {
 	char name[MAX];
 	char lastname[MAX];
@@ -19,19 +19,19 @@ struct person
 	int number;
 	int code;
 	char state[MAX];
-};
+}ST;
 /* FUNCTION PROTOTYPES */
-void readperson(struct person*);
+void readperson(ST*);
 /* MAIN PROGRAM */
 /*main: To add each person data */
 int main()
 {
 	char sStr[20];
 	int iIndex;
-	struct person s1[3];
+	ST s1[3];
 	readperson(s1);
 	/* Opening a file in write mode */
-	FILE*fp=fopen("file6","w");
+	FILE*fp=fopen("file","w");
 	for(iIndex=0;iIndex<3;iIndex++)
 	{
 			
@@ -45,7 +45,7 @@ int main()
  * Created:18/9/2024
  * Modified:18/9/2024
  */
-void readperson(struct person*s1)
+void readperson(ST *s1)
 {
 	int ivar;
 	for(ivar=0;ivar<3;ivar++){

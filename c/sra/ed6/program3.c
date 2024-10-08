@@ -7,11 +7,11 @@
 #include<stdio.h>
 
 /* Structure to hold name, age, and salary */
-struct person {
+typedef struct person {
     char name[20];
     int age;
     float salary;
-};
+}ST;
 
 /* MAIN PROGRAM */
 /*main: To open a file in read mode to read data from file*/
@@ -21,16 +21,16 @@ int main() {
     printf("Enter the number of persons:\n");
     scanf("%d", &inum);
 
-    struct person s1[inum];
+    ST s1[inum];
 
-    // Open file for writing
-    FILE *fp = fopen("file3", "w");
+    /* Open file for writing */
+    FILE *fp = fopen("file", "a+");
     if (fp == NULL) {
         printf("Error opening file for writing.\n");
         return 1;
     }
 
-    // Input and write data to file
+    /* Input and write data to file */
     for (iIndex = 0; iIndex < inum; iIndex++) {
         printf("Enter name, age, and salary for person %d:\n", iIndex + 1);
         scanf("%s %d %f", s1[iIndex].name, &s1[iIndex].age, &s1[iIndex].salary);
@@ -40,7 +40,7 @@ int main() {
     fclose(fp);
 
     /* Open file for reading */
-    fp = fopen("file3", "r");
+    fp = fopen("file", "r");
     if (fp == NULL) {
         printf("Error opening file for reading.\n");
         return 1;

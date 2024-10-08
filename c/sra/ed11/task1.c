@@ -52,7 +52,7 @@ void Pop(void) ;
 void Dequeue(void); 
 void Enqueue();
 /* MAIN PROGRAM */
-/* main : creating stack and queue */
+/* main : creating stack(Dosas) and queue (Employees) */
 int main()
 {
     int iNum, iIndex1, iIndex2,flag=0;
@@ -72,9 +72,10 @@ int main()
             if (sfront->iData == qfront->iData) {
 
                 flag=1;
-
+                /* To remove element from stack of dosas*/
                 Pop();
 
+                /* To remove element from queue of employees*/
                 Dequeue();
 
                 printStack();

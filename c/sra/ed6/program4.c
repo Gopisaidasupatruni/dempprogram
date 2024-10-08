@@ -10,12 +10,12 @@
 /* MACRO DEFINITIONS */
 #define LENGTH 100
 /* Structure with name age salary members */
-struct person
+typedef struct person
 {
         char sName[LENGTH];
         int iAge;
         float fSalary;
-};
+}ST;
 /* MAIN PROGRAM */
 /* main: To search age and wages of person based on name  */
 
@@ -23,11 +23,11 @@ int main()
 {
 	char sStr[LENGTH];
 	int inum,iIndex;
-	printf("enter a number\n");
-        scanf("%d",&inum);
-	struct person s1[inum];
+/*	printf("enter a number\n");
+        scanf("%d",&inum); */
+	ST s1[5];
 	/* Opening file in write mode */
-	FILE*fp=fopen("file","w");
+/*	FILE*fp=fopen("file","w");
 	for(iIndex=0;iIndex<inum;iIndex++)
 	{
 
@@ -35,15 +35,23 @@ int main()
 	scanf("%s %d %f",s1[iIndex].sName,&s1[iIndex].iAge,&s1[iIndex].fSalary);
 	fprintf(fp,"%s %d %f",s1[iIndex].sName,s1[iIndex].iAge,s1[iIndex].fSalary);
 	}
-	fclose(fp);
+	fclose(fp);*/
+	FILE*fp=fopen("file","r");
 	printf("enter name\n");
 	scanf("%s",sStr);
-	for(iIndex=0;iIndex<inum;iIndex++)
+	
+	fscanf(fp,"%s %d %f",s1[iIndex].sName,&s1[iIndex].iAge,&s1[iIndex].fSalary);
+             
+		if((strcmp(s1[iIndex].sName,sStr)==0))
+		     printf("name: %s\n person details\nAge: %d\n Salary: %.2f\n",s1[iIndex].sName,s1[iIndex].iAge,s1[iIndex].fSalary);
+	else
 	{
-             if(strcmp(s1[iIndex].sName,sStr)==0)
-		     printf("name: %s\n Age: %d\n Salary: %.2f\n",s1[iIndex].sName,s1[iIndex].iAge,s1[iIndex].fSalary);
+		printf("not found \n");
+		return 0;
 	}
+
+			
 	
-	
+	return 0;
 }
 	

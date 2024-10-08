@@ -98,6 +98,9 @@ int main(void) {
     return 0;
 }
 /* showHelp: shows menu by pressing h */
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 void showHelp(void) {
     printf("i <string> : inserts the element in <string> alphabetically into the list\n");
     printf("d <string> : removes the element in <string> from the list\n");
@@ -109,6 +112,9 @@ void showHelp(void) {
     printf("q : end of the program (first remove the list)\n");
 }
 /* add: To add a node in a single linked list */
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 void add( char*s,Node **b) {
     //printf("This function inserts \"%s\" (alphabetically) into the list\n", s);
 Node*temp,*r;
@@ -137,6 +143,9 @@ r=r->next;
 }
 
 /* removeElement: To remove a element from the list */
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 void removeElement(char *s, Node **b) {
     //printf("This function removes \"%s\" from the list\n", s);
 Node *prv=NULL,*temp;
@@ -172,6 +181,9 @@ Node *prv=NULL,*temp;
 	printf("not found");
 }
 /* isItem: Tosearch a element */
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 int isItem(char *s, Node *b) {
 //    printf("This function searches \"%s\" in the list\n", s);
     while (b != NULL) {
@@ -187,6 +199,9 @@ int isItem(char *s, Node *b) {
 
 /*countItems: To count number of nodes */
 
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 int countItems(Node *b) {
    // printf("This function returns the number of items in the list\n");
 	    int count=0;
@@ -203,6 +218,9 @@ int countItems(Node *b) {
     return count;
 }
 /* removeList: To remove a element from the list */
+/*  Author: Gopisai
+ *  Date:19/9/2024
+ */
 void removeList(Node **b) {
     Node *p = *b;
     while (p != NULL) {
@@ -229,4 +247,4 @@ char *trim(char *s) {
     while (*s == ' ') s++;
     return s;
 }
-
+/* End trim */

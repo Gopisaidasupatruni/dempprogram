@@ -14,12 +14,12 @@
 /* MACRO DEFINITIONS */
 #define LENGTH 100
 /* Structure with name age salary members */
-struct person
+typedef struct person
 {
 	char sName[LENGTH];
 	int iAge;
 	float fSalary;
-};
+}ST;
 /* MAIN PROGRAM */
 /* main: To store data name age and salary in a file */
 int main()
@@ -28,8 +28,8 @@ int main()
 	int inum,iIndex;
 	printf("enter a number\n");
 	scanf("%d",&inum);
-	struct person s1[inum];
-	FILE*fp=fopen("file","w");
+	ST s1[inum];
+	FILE*fp=fopen("file","a+");
 	for(iIndex=0;iIndex<inum;iIndex++)
 	{
 

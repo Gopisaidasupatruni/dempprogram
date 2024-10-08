@@ -11,21 +11,20 @@
 /* MACRO DEFINITIONS */
 #define LENGTH 200
 /* Structure to hold name, last name, age, and salary */
-struct person {
+typedef struct person {
     char firstname[LENGTH];
     char lastname[LENGTH];
     int age;
     float salary;
-};
+}ST;
 
-/* FUNCTION PROTOTYPE */
-void readperson(struct person *);
+
 
 /* MAIN PROGRAM */
 /* main : Adds the last name into existing data */
 int main() {
     int iIndex;
-    struct person s1[3];
+    ST s1[3];
 
     /* Open the file with the original data */
     FILE *fp = fopen("file", "r");
@@ -35,19 +34,21 @@ int main() {
     }
 
     /* Read the existing data (first name, age, and salary) */
-    for (iIndex = 0; iIndex < 3; iIndex++) {
+  for (iIndex = 0; iIndex < 3; iIndex++) {
         fscanf(fp, "%s %d %f", s1[iIndex].firstname, &s1[iIndex].age, &s1[iIndex].salary);
     }
     fclose(fp);
+    
 
     /* Read the last names for each person */
     for (iIndex = 0; iIndex < 3; iIndex++) {
-        printf("Enter the last name of %s: ", s1[iIndex].firstname);
+
+        printf("Enter the last name %s: ", s1[iIndex].firstname);
         scanf("%s", s1[iIndex].lastname);
     }
 
     /* Open a new file to write the updated data (first name, last name, age, salary) */
-    fp = fopen("file_lastname.txt", "w");
+    fp = fopen("file", "w");
     
 
     /* Write the updated data to the new file */
