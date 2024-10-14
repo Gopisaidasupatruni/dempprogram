@@ -16,12 +16,12 @@ UNITY_SRC_FILES = $(UNITY_DIR)/unity.c
 all: calc
 
 # Compile the main calculator program
-calc:  $(SRC_DIR)/main.c  $(SRC_DIR)/task1.h
-	$(CC) $(CFLAGS) -o calc  $(SRC_DIR)/main.c
+calc:  $(SRC_DIR)/main.c  $(SRC_DIR)/program.c $(SRC_DIR)/task1.h
+	$(CC) $(CFLAGS) -o calc  $(SRC_DIR)/main.c $(SRC_DIR)/program.c
 
 # Compile the test runner (testrunner) and link with Unity framework
-testrunner: $(TEST_SRC_FILES)  $(UNITY_SRC_FILES)  $(SRC_DIR)/task1.h
-	$(CC) $(CFLAGS) -o testrunner $(TEST_SRC_FILES)  $(UNITY_SRC_FILES)
+testrunner: $(TEST_SRC_FILES)  $(UNITY_SRC_FILES) $(SRC_DIR)/program.c $(SRC_DIR)/task1.h
+	$(CC) $(CFLAGS) -o testrunner $(TEST_SRC_FILES)  $(UNITY_SRC_FILES) $(SRC_DIR)/program.c
 
 # Run tests by invoking testrunner
 test: testrunner

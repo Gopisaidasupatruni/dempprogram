@@ -13,6 +13,7 @@ typedef struct person
 }ST;
 
 
-void test_readPerson(void);
+void test_readPerson(ST);
+
 #endif /* CALC_H */
 

@@ -6,7 +6,6 @@
 /* append: To add nodes at the end */
 void append(ST **q, int num) {
     ST *temp = *q, *r;
-    /* If there are no nodes */
     if (*q == NULL) {
         temp = (ST *)malloc(sizeof(ST));
         temp->data = num;
@@ -143,6 +142,7 @@ void removeDuplicates(ST **ptr) {
     ST *temp = *ptr;
     while (temp != NULL) {
         ST *r = temp;
+
         while (r->link != NULL) {
             if (r->link->data == temp->data) {
                 ST *prv = r->link;

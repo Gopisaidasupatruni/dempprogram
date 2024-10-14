@@ -24,23 +24,23 @@ int main() {
     ST s1[inum];
 
     /* Open file for writing */
-    FILE *fp = fopen("file", "a+");
+   /* FILE *fp = fopen("file", "a+");
     if (fp == NULL) {
         printf("Error opening file for writing.\n");
         return 1;
-    }
+    }*/
 
     /* Input and write data to file */
-    for (iIndex = 0; iIndex < inum; iIndex++) {
+/*    for (iIndex = 0; iIndex < inum; iIndex++) {
         printf("Enter name, age, and salary for person %d:\n", iIndex + 1);
         scanf("%s %d %f", s1[iIndex].name, &s1[iIndex].age, &s1[iIndex].salary);
         fprintf(fp, "%s %d %.2f\n", s1[iIndex].name, s1[iIndex].age, s1[iIndex].salary);
     }
 
-    fclose(fp);
+    fclose(fp);*/
 
     /* Open file for reading */
-    fp = fopen("file", "r");
+    FILE *fp = fopen("file", "r");
     if (fp == NULL) {
         printf("Error opening file for reading.\n");
         return 1;
@@ -48,8 +48,8 @@ int main() {
 
     /* Read and display data */
     printf("\nData from file:\n");
-    while (fscanf(fp, "%s %d %f", s1[0].name, &s1[0].age, &s1[0].salary) != EOF) {
-        printf("name: %s\nage: %d\nsalary: %.2f\n", s1[0].name, s1[0].age, s1[0].salary);
+    while (fscanf(fp, "%s %d %f", s1->name, &s1->age, &s1->salary) != EOF) {
+        printf("name: %s\nage: %d\nsalary: %.2f\n", s1->name, s1->age, s1->salary);
     }
 
     fclose(fp);

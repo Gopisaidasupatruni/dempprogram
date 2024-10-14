@@ -8,7 +8,7 @@ int main()
     char sStr[LENGTH], cVariable;
     ST s1[3];
     int iIndex = 0;
-    getchar();  
+    readPerson(s1); 
     printf("Enter a name to search:\n");
     while ((cVariable = getchar()) != EOF && cVariable != '\n')
         sStr[iIndex++] = cVariable;
