@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
     SP p[10];
     readPerson(p, argv[1]); 
-    calculate(p,current_date);
+    calculate(p, current_date);
     /* Pass the filename to readPerson */
 }
 /*readPerson: To read three persons data */
@@ -100,6 +100,10 @@ void calculate(SP *p, SD d) {
         age_months[iIndex] = d.month - p[iIndex].birthdate.month;
         age_days[iIndex]= d.day - p[iIndex].birthdate.day;     
      	age[iIndex] = d.year - p[iIndex].birthdate.year;
+	if(age[iIndex]<0){
+		printf("Enter data properly\n");
+                return;
+	}
         printf("%s age is %d\n", p[iIndex].name, age[iIndex]);
 
         
