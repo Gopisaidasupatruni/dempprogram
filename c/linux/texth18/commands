@@ -1,0 +1,30 @@
+1) > and >>
+gopisai@8T7GW33:~/c/linux/ch18$ echo abc > file1.c
+gopisai@8T7GW33:~/c/linux/ch18$ cat file1.c
+abc
+gopisai@8T7GW33:~/c/linux/ch18$ zcho abc > file1.c
+Command 'zcho' not found, did you mean:
+  command 'echo' from deb coreutils (8.32-4.1ubuntu1.2)
+Try: sudo apt install <deb name>
+gopisai@8T7GW33:~/c/linux/ch18$ cat file1.c
+gopisai@8T7GW33:~/c/linux/ch18$ echo abc > file1.c
+gopisai@8T7GW33:~/c/linux/ch18$ echo def >> file1.c
+gopisai@8T7GW33:~/c/linux/ch18$ cat file1.c
+abc
+def
+gopisai@8T7GW33:~/c/linux/ch18$ zcho def >> file1.c
+Command 'zcho' not found, did you mean:
+  command 'echo' from deb coreutils (8.32-4.1ubuntu1.2)
+Try: sudo apt install <deb name>
+gopisai@8T7GW33:~/c/linux/ch18$ cat file1.c
+abc
+def
+
+2)
+gopisai@8T7GW33:~/c/linux/ch18$ set -o noclobber
+gopisai@8T7GW33:~/c/linux/ch18$ echo ghi > file1.c
+-bash: file1.c: cannot overwrite existing file
+gopisai@8T7GW33:~/c/linux/ch18$ set +o noclobber
+gopisai@8T7GW33:~/c/linux/ch18$ echo ghi > file1.c
+gopisai@8T7GW33:~/c/linux/ch18$ cat file1.c
+ghi

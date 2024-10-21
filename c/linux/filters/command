@@ -1,0 +1,93 @@
+gopisai@8T7GW33:~/c/linux$ tac file.c | cat | cat
+boy
+good
+gopi
+gopisai@8T7GW33:~/c/linux$ tac file.c | tee file1.c | tac
+gopi
+good
+boy
+gopisai@8T7GW33:~/c/linux$ cat file.c
+gopi
+good
+boy
+
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep a
+abc
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -i a
+abc
+Abc
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -v d
+abc
+Abc
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -A1 a
+abc
+Abc
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -B1 a
+abc
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -B1 A
+abc
+Abc
+
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -B2 d
+abc
+Abc
+def
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -B3 D
+abc
+Abc
+def
+Def
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -c2 d
+1
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | grep -C2 d
+abc
+Abc
+def
+Def
+ghi
+gopisai@8T7GW33:~/c/linux/filters$
+gopisai@8T7GW33:~/c/linux/filters$ cut -c 1 file1.c
+a
+A
+d
+D
+g
+G
+gopisai@8T7GW33:~/c/linux/filters$ cut -c 2 file1.c
+b
+b
+e
+e
+h
+h
+gopisai@8T7GW33:~/c/linux/filters$ cut -d: -f1 file1.c
+abc
+Abc
+def
+Def
+ghi
+Ghi
+gopisai@8T7GW33:~/c/linux/filters$ man tr
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | tr [a-z] [A-Z]
+ABC
+ABC
+DEF
+DEF
+GHI
+GHI
+gopisai@8T7GW33:~/c/linux/filters$ cat file1.c | tr -d A
+abc
+bc
+def
+Def
+ghi
+Ghi
+gopisai@8T7GW33:~/c/linux/filters$
+
+
+
+gopisai@8T7GW33:~/c/linux/filters$ echo abc abc | sed 's/abc/def/'
+def abc
+gopisai@8T7GW33:~/c/linux/filters$ echo abc abc | sed 's/abc/def/g'
+def def
+gopisai@8T7GW33:~/c/linux/filters$

@@ -1,0 +1,24 @@
+Name: gopi
+Last Name: dasu
+Town: akp
+Street: kmp
+Number: 353
+Postal Code: 531033
+State: ap
+
+Name: tharun
+Last Name: potnuru
+Town: bobbili
+Street: bobbili
+Number: 450
+Postal Code: 531111
+State: westbengal
+
+Name: rakesh
+Last Name: peddaruvu
+Town: anantapur
+Street: lanjalakompa
+Number: 69
+Postal Code: 5310000
+State: australia
+

@@ -1,3 +1,4 @@
+
 /** REQUIRED HEADER FILES */
 #include <stdio.h>
 #include<stdlib.h>
@@ -40,12 +41,13 @@ int main() {
                 display(p);
                 printf("\n");
                 break;
-		/* To exit */
+		/* To count elements */
 	    case 'c':
 		printf("Elements count\n");
 		int icount=d_length(p);
 		printf("Total elements %d\n",icount);
 		break;
+		/* exit */
             case 'q':
                 return 0;
             default:
