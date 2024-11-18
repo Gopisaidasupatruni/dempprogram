@@ -1,15 +1,6 @@
 Name: gopi
-Town: akp
-Age: 0
-Salary: -0.00
-
-Name: tharun
-Town: bobbili
-Age: 1
-Salary: 0.00
-
-Name: rakesh
-Town: anantapur
-Age: 0
-Salary: 0.00
-
+Town: kmp
+Name: tharyun
+Town: nellore
+Name: siddu
+Town: hyd

@@ -12,7 +12,7 @@ int main() {
         printf("Choose an option:\n");
         printf("1. Enter name and town for 3 people\n");
         printf("2. Search town by name\n");
-        printf("3. Save name, town, age, and salary to file\n");
+        printf("3. Save name, town to file\n");
         printf("4. Read data from file\n");
         printf("5. Add last name and address, save to new file\n");
         printf("6. Exit\n");
@@ -34,7 +34,7 @@ int main() {
                 }
                 break;
             case 3:
-                fp = fopen("people_data.txt", "w");
+                fp = fopen("people_data.txt", "a+");
                 if (fp == NULL) {
                     printf("Error opening file for writing.\n");
                     return 1;
@@ -54,7 +54,7 @@ int main() {
                 break;
             case 5:
                 addAdditionalInfo(people);
-                fp = fopen("extended_data.txt", "w");
+                fp = fopen("extended_data.txt", "a+");
                 if (fp == NULL) {
                     printf("Error opening file for writing.\n");
                     return 1;

@@ -30,22 +30,27 @@ fi
 #for loop to traverse all files in source directory
 for file in "$SOURCE"/*
 do
-
+        echo $file
 	filename=${file##*/}
+	#if [ -f filename ]
+	#then echo file exists
+	#fi
 
-	echo dir1 $filename
+	echo  $filename 
         #To change first letter of filename into capital and remaining into small
-	new_filename=$(echo "$filename" | sed 's/\(.\)\(.*\)/\U\1\L\2/')
-	echo dir2 $new_filename 
+	
+	new_filename=$(echo "$filename" | rev | sed 's/\(.\)\(.\)\(.*\)/\U\1\U\2\L\3/')
+	echo "$new_filename" | rev 
+
 
 # Copy the file to dest directory
-cp "$file" "$DEST/$new_filename"
+#cp "$file" "$DEST/$new_filename"
 
 #To change the user ownership of file
-sudo chown "$OWNER" "$DEST/$new_filename"
+#sudo chown "$OWNER" "$DEST/$new_filename"
 
 #To change the permissions of file
-sudo chmod "$FILE" "$DEST/$new_filename"
+#sudo chmod "$FILE" "$DEST/$new_filename"
 
 done
 #end

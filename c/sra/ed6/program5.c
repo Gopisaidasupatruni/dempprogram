@@ -48,7 +48,7 @@ int main() {
     }
 
     /* Open a new file to write the updated data (first name, last name, age, salary) */
-    fp = fopen("file", "w");
+    fp = fopen("file", "a+");
     
 
     /* Write the updated data to the new file */

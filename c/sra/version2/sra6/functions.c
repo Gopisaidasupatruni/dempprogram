@@ -7,8 +7,7 @@ void readPerson(Person *s1) {
         printf("Enter name  hometown age salary of person %d: ", i + 1);
         scanf(" %[^\n]%*c", s1[i].sName);  // Read name with spaces
         scanf(" %[^\n]%*c", s1[i].sTown); 
-        scanf( " %d", &s1[i].iAge);
-        scanf(" %f", &s1[i].fSalary);	// Read town with spaces
+        
     }
 }
 
@@ -25,30 +24,35 @@ void savePersonToFile(Person *s1, FILE *fp) {
     for (int i = 0; i < NUM_PEOPLE; i++) {
         fprintf(fp, "Name: %s\n", s1[i].sName);
         fprintf(fp, "Town: %s\n", s1[i].sTown);
-        fprintf(fp, "Age: %d\n", s1[i].iAge);
-        fprintf(fp, "Salary: %.2f\n\n", s1[i].fSalary);
+        
     }
 }
 
 void readPersonFromFile(FILE *fp) {
     Person p;
-    while (fscanf(fp, "%s %s %d %f", p.sName, p.sTown, &p.iAge, &p.fSalary) != EOF) {
-        printf("Name: %s, Town: %s, Age: %d, Salary: %.2f\n", p.sName, p.sTown, p.iAge, p.fSalary);
+    while (fscanf(fp, "%s %s ", p.sName, p.sTown) != EOF) {
+        printf("Name: %s, Town: %s \n", p.sName, p.sTown);
     }
 }
 
 void addAdditionalInfo(Person *s1) {
     for (int i = 0; i < NUM_PEOPLE; i++) {
         printf("Enter last name for %s: ", s1[i].sName);
-        scanf(" %[^\n]%*c", s1[i].sLastName);
+        scanf(" %[^\n]%*c", s1[i].sLastName);  
+        
         printf("Enter street name: ");
-        scanf(" %[^\n]%*c", s1[i].sStreet);
+        scanf(" %[^\n]%*c", s1[i].sStreet);  
+        
         printf("Enter house number: ");
         scanf("%d", &s1[i].iNumber);
+        getchar();  
+
         printf("Enter postal code: ");
         scanf("%d", &s1[i].iPostalCode);
+        getchar();  
+
         printf("Enter state: ");
-        scanf(" %[^\n]%*c", s1[i].sState);
+        scanf(" %[^\n]%*c", s1[i].sState); 
     }
 }
 

@@ -1,3 +1,18 @@
 gopi 23 2000
 sai 12 1000
 rakesh 1 500
+name: gopi
+last name: dasu
+age: 23
+salary: 2000.00
+
+name: sai
+last name: peddar
+age: 12
+salary: 1000.00
+
+name: rakesh
+last name: shaik
+age: 1
+salary: 500.00
+

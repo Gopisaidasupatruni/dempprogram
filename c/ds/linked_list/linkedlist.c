@@ -164,7 +164,7 @@ void moveNode(ST **p, ST **q) {
     *p = temp;
 }
 
-/* Insertsort: Entering elements in sorting */
+/* Sortedinsert: Entering elements in sorting */
 void SortedInsert(ST **q,ST*new) {
     ST *last = *q, *temp = *q;
     int num;
