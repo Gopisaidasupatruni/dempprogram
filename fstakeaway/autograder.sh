@@ -18,7 +18,7 @@ for filename in $TESTDIR/*.c; do
     outfile=$OUTDIR/$name.out
     echo "Running testcase $filename: Output stored in $outfile"
     cp $filename testcase.c
-    gcc testcase.c simplefs-ops.c simplefs-disk.c
+    gcc testcase.c 2simplefs-ops.c simplefs-disk.c
     ./a.out > $outfile
     rm -f testcase.c
     rm -f a.out

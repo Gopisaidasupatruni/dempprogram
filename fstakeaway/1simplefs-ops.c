@@ -1,120 +1,221 @@
-/* REQUIRED HEADER FILES */
-#include "simplefs-disk.h"
-#include <string.h>
-#include <assert.h>
+#include "simplefs-ops.h"
+
+extern struct filehandle_t file_handle_array[MAX_OPEN_FILES]; /* Array for storing opened files */
 
 
-/* Declare the external file handle array */
-extern struct filehandle_t file_handle_array[MAX_OPEN_FILES];
+int simplefs_create(char *filename){
 
-/* simplefscreate: Create a file and allocate its inode */
-int simplefs_create(char *filename) {
+	/*
 
-	/* Allocating a free inode */
-    int inodenum = simplefs_allocInode();
-    if (inodenum == -1)
-	    return -1;
-/* Mark inode as used in the freelist */
-    inode_freelist[inodenum] = 1;
-    struct inode_t inode;
+	   Create file with name `filename` on disk
 
-	int iFound = 0;
-	for(int i= 0; i< MAX_FILES; i++)
+*/
+	if(filename == NULL || strlen(filename) == 0)
+
 	{
-		simplefs_readInode(i,&inode);
-		if(strcmp(inode.name,filename)==0)
-		{
-			iFound = 1;
-		}
-	}
-	if(iFound == 1)
-	{
-		fprintf(stderr,"Filename already exist\n");
+
+		fprintf(stderr,"Error : Invalid filename\n");
+
 		return -1;
+
 	}
 
+	struct inode_t inode;
 
-    /* Clear the inode structure */
-    memset(&inode, 0, sizeof(struct inode_t));
+	/* Check if filename already exists */
 
-  strncpy(inode.name, filename, MAX_NAME_STRLEN);
-   /* Set inode status and initialize other fields */
-    inode.status = INODE_IN_USE;
-    inode.file_size = 0;
-    for (int i = 0; i < MAX_FILE_SIZE; i++) inode.direct_blocks[i] = -1;
+	for (int i = 0; i < NUM_INODES; i++) {
 
-    simplefs_writeInode(inodenum, &inode);
-    return inodenum;
+		simplefs_readInode(i, &inode);
+
+		if (strcmp(inode.name, filename) == 0) {
+
+			fprintf(stderr,"Error : filename already exixt\n");
+			return -1;
+
+		}
+
+	}
+
+	/* Allocate inode for the new file */
+
+	int inode_num = simplefs_allocInode();
+
+	if (inode_num == -1) {
+
+		fprintf(stderr,"Error : No free Inodes\n");
+		return -1;
+
+	}
+
+	/* Initialize inode structure */
+
+	inode.status = INODE_IN_USE;
+
+	strncpy(inode.name, filename, MAX_NAME_STRLEN);
+
+	inode.file_size = 0;
+
+	for (int i = 0; i < MAX_FILE_SIZE; i++) {
+
+		inode.direct_blocks[i] = -1;  /* No data blocks assigned yet */
+
+	}
+
+	simplefs_writeInode(inode_num, &inode);
+
+	return inode_num;
+
 }
 
-/* simplefs_open: Open a file and return its file descriptor */
-int simplefs_open(char *filename) {
-    struct inode_t inode;
-    /* Search for the file in the inode table */
-    for (int i = 0; i < NUM_INODES; i++) {
-        simplefs_readInode(i, &inode);
-	/* Check if the inode is in use and matches the given filename */
-        if (inode.status == INODE_IN_USE && strcmp(inode.name, filename) == 0) {
-            for (int j = 0; j < MAX_OPEN_FILES; j++) {
-                if (file_handle_array[j].inode_number == -1) {
-                    file_handle_array[j].inode_number = i;
-		    /* Initialize file offset */
-                    file_handle_array[j].offset = 0;
-                    return j;
-                }
-            }
-        }
-    }
-    return -1;  /* File not found or no free file descriptors */
+
+void simplefs_delete(char *filename){
+
+	/*
+
+	   Delete file with name `filename` from disk
+
+*/
+	if(filename == NULL || strlen(filename) == 0)
+
+	{
+
+		fprintf(stderr,"Error : Invalid filename\n");
+
+		return;
+
+	}
+
+	struct inode_t inode;
+
+	int inode_num = -1;
+
+	/* Find the inode associated with the file */
+
+	for (int i = 0; i < NUM_INODES; i++) {
+
+		simplefs_readInode(i, &inode);
+
+		if (strcmp(inode.name, filename) == 0) {
+
+			inode_num = i;
+
+			break;
+
+		}
+
+	}
+
+	if (inode_num == -1) {
+		fprintf(stderr,"filename not found\n");
+		return ;
+
+	}
+
+	/* Free data blocks associated with the file */
+
+	for (int i = 0; i < MAX_FILE_SIZE && inode.direct_blocks[i] != -1; i++) {
+
+		simplefs_freeDataBlock(inode.direct_blocks[i]);
+
+	}
+
+	/* Free the inode */
+
+	simplefs_freeInode(inode_num);
+
 }
-/* simplefs_delete: Function to delete a file by freeing its inode and data blocks */
-int simplefs_delete(char *filename) {
-	/* Temporary structure to hold inode data */
-    struct inode_t inode;
-    /* Variable to store the inode number */
-    int inodenum = -1;
-    
-    /*  Search for the inode by filename */
-    for (int i = 0; i < NUM_INODES; i++) {
-        simplefs_readInode(i, &inode);
-        if (inode.status == INODE_IN_USE && strcmp(inode.name, filename) == 0) {
-            inodenum = i;
-            break;
-        }
-    }
-     /* If no matching file is found */
-    if (inodenum == -1) {
-        fprintf(stderr, "File not found: %s\n", filename);
-        return -1;  // File not found
-    }
-
-    // Free all data blocks
-    for (int i = 0; i < MAX_FILE_SIZE; i++) {
-        if (inode.direct_blocks[i] != -1) {
-		/* Release the block */
-            simplefs_freeDataBlock(inode.direct_blocks[i]);
-	    /* Mark the block as unallocated */
-            inode.direct_blocks[i] = -1;
-        }
-    }
-
-    // Free the inode
-    //inode.status = INODE_FREE;
-    /*  Update the inode freelist */
-//    inode_freelist[inodenum] = 0;  // Mark as free
-  //  simplefs_writeInode(inodenum, &inode);
-	simplefs_freeInode(inodenum);
-
-    inode.status = INODE_FREE;
-    inode.file_size = 0;
-    for (int i = 0; i < MAX_FILE_SIZE; i++) {
-        inode.direct_blocks[i] = -1;
-    }
-    simplefs_writeInode(inodenum, &inode);
 
 
-    
-    return 0;  
+int simplefs_open(char *filename){
+
+	/*
+
+	   Open file with name `filename` and return file handle
+
+*/
+	if(filename == NULL || strlen(filename) == 0)
+
+	{
+
+		fprintf(stderr,"Invalid file Name\n");
+
+		return -1;
+
+	}
+
+	struct inode_t inode;
+
+	int inode_num = -1;
+
+	/* Find the inode associated with the file */
+
+	for (int i = 0; i < NUM_INODES; i++) {
+
+		simplefs_readInode(i, &inode);
+
+		if (strcmp(inode.name, filename) == 0) {
+
+			inode_num = i;
+
+			break;
+
+		}
+
+	}
+
+	if (inode_num == -1) {
+		fprintf(stderr,"Requested filename NOT found\n");
+		return -1;
+
+	}
+
+	/* Find an available file handle */
+
+	for (int i = 0; i < MAX_OPEN_FILES; i++) {
+
+		/* if file is already opened */
+
+		if(file_handle_array[i].inode_number == inode_num)
+
+			return i;
+
+		/* allocating free slot */
+
+		if (file_handle_array[i].inode_number == -1) {
+
+			file_handle_array[i].inode_number = inode_num;
+
+			file_handle_array[i].offset = 0;
+
+			return i;
+
+		}
+
+	}
+
+	return -1;
+
+}
+
+void simplefs_close(int file_handle){
+
+	/*
+
+	   Close file pointed by `file_handle`
+
+*/
+
+	if (file_handle < 0 || file_handle >= MAX_OPEN_FILES || file_handle_array[file_handle].inode_number == -1) {
+
+		return;
+
+	}
+
+	file_handle_array[file_handle].inode_number = -1;  /* Mark file handle as closed */
+
+	file_handle_array[file_handle].offset = 0;
+
 }
 
 

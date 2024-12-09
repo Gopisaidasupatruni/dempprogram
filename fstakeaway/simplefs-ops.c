@@ -18,7 +18,8 @@ int simplefs_create(char *filename) {
 
 	/* Allocating a free inode */
     int inodenum = simplefs_allocInode();
-    if (inodenum == -1) return -1;
+    if (inodenum == -1)
+	    return -1;
 /* Mark inode as used in the freelist */
     inode_freelist[inodenum] = 1;
     struct inode_t inode;
@@ -46,7 +47,8 @@ int simplefs_create(char *filename) {
    /* Set inode status and initialize other fields */
     inode.status = INODE_IN_USE;
     inode.file_size = 0;
-    for (int i = 0; i < MAX_FILE_SIZE; i++) inode.direct_blocks[i] = -1;
+    for (int i = 0; i < MAX_FILE_SIZE; i++)
+	    inode.direct_blocks[i] = -1;
 
     simplefs_writeInode(inodenum, &inode);
     return inodenum;
@@ -71,8 +73,7 @@ int simplefs_open(char *filename) {
         }
     }
     return -1;  /* File not found or no free file descriptors */
-}
-/* simplefs_delete: Function to delete a file by freeing its inode and data blocks */
+}/* simplefs_delete: Function to delete a file by freeing its inode and data blocks */
 int simplefs_delete(char *filename) {
 	/* Temporary structure to hold inode data */
     struct inode_t inode;
@@ -121,91 +122,72 @@ int simplefs_delete(char *filename) {
     
     return 0;  
 }
-
 int simplefs_read(int file_handle, char *buf, int nbytes) {
-    /* Check if the provided file handle is valid */
-  if (file_handle < 0 || file_handle >= MAX_OPEN_FILES) {
-        fprintf(stderr, "Error: Invalid file handle.\n");
-        return -1;
-    }
-
-    /* Retrieve the inode number and current offset for the file */
-    int inodenum = file_handle_array[file_handle].inode_number;
-    int offset = file_handle_array[file_handle].offset;
-
-    struct inode_t inode;
-    simplefs_readInode(inodenum, &inode);
-
-    // Ensure read does not exceed file size
-    if (offset + nbytes > inode.file_size) {
-        fprintf(stderr, "Error: Read exceeds file size.\n");
-        return -1;
-    }
-
-    int remaining = nbytes;         // Remaining bytes to read
-    int buffer_pos = 0;             // Position in the buffer
-    int current_block = offset / BLOCKSIZE;
-    int block_offset = offset % BLOCKSIZE;
-
-    /* Read data in a loop until all requested bytes are read */
-    while (remaining > 0) {
-        int bytes_to_read = BLOCKSIZE - block_offset;
-        if (remaining < bytes_to_read) {
-            bytes_to_read = remaining;
-        }
-
-        char block_data[BLOCKSIZE];
-        simplefs_readDataBlock(inode.direct_blocks[current_block], block_data);
-
-        memcpy(buf + buffer_pos, block_data + block_offset, bytes_to_read);
-
-        buffer_pos += bytes_to_read;
-        remaining -= bytes_to_read;
-        current_block++;
-        block_offset = 0;
-    }
-
-    return 0;
-}
-int simplefs_write(int file_handle, char *buf, int nbytes) {
-    
+    /* Validate file handle */
     if (file_handle < 0 || file_handle >= MAX_OPEN_FILES) {
         fprintf(stderr, "Error: Invalid file handle.\n");
-        return -1; 
+        return -1;
     }
 
     /* Retrieve inode number and current offset for the file */
     int inodenum = file_handle_array[file_handle].inode_number;
     int offset = file_handle_array[file_handle].offset;
 
+    struct inode_t inode;
+    simplefs_readInode(inodenum, &inode);
 
-    
+    /* Ensure read does not exceed file size */
+    if (offset + nbytes > inode.file_size) {
+        fprintf(stderr, "Error: Read exceeds file size.\n");
+        return -1;
+    }
+
+    /* Variables for reading */
+    char *buf_ptr = buf;  // Pointer to the buffer
+    int current_block = offset / BLOCKSIZE;
+    int block_offset = offset % BLOCKSIZE;
+
+    /* Read data block-by-block */
+    while (nbytes > 0) {
+        char block_data[BLOCKSIZE];
+        simplefs_readDataBlock(inode.direct_blocks[current_block], block_data);
+
+        int bytes_to_read = (nbytes < BLOCKSIZE - block_offset) ? nbytes : (BLOCKSIZE - block_offset);
+
+        memcpy(buf_ptr, block_data + block_offset, bytes_to_read);
+
+        /* Update pointers and counters */
+        buf_ptr += bytes_to_read;
+        nbytes -= bytes_to_read;
+        block_offset = 0;  // After the first block, offset in subsequent blocks is zero
+        current_block++;
+    }
+
+    return 0;  // Success
+}
+int simplefs_write(int file_handle, char *buf, int nbytes) {
+    if (file_handle < 0 || file_handle >= MAX_OPEN_FILES) {
+        fprintf(stderr, "Error: Invalid file handle.\n");
+        return -1;
+    }
+
+    /* Retrieve inode number and current offset for the file */
+    int inodenum = file_handle_array[file_handle].inode_number;
+    int offset = file_handle_array[file_handle].offset;
+
     struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
     simplefs_readInode(inodenum, inode);
 
-    
-    int buffer_offset = 0;            // Offset in the input buffer
-    int current_block = offset / BLOCKSIZE; // Determine the starting block
-    int block_offset = offset % BLOCKSIZE;  // Offset within the starting block
-    int bytesend = BLOCKSIZE - block_offset; // Bytes from offset to end of the block
-    int bytes_to_write;               // Number of bytes to write in the current iteration
-    char temp_block[BLOCKSIZE];       // Temporary buffer for a data block
+    /* Adjust file size if offset is beyond current size */
+    inode->file_size = (inode->file_size < offset) ? offset : inode->file_size;
 
-    /* Adjust file size to reflect the current offset */
-    if (inode->file_size < offset) {
-        inode->file_size = offset;
-    }
+    int current_block = offset / BLOCKSIZE;
+    int block_offset = offset % BLOCKSIZE;
 
-    /* Write data to the file */
+    /* Prepare to write */
+    char *buf_ptr = buf;
     while (nbytes > 0) {
-        /* Determine the number of bytes to write in this iteration */
-       if (nbytes < bytesend) {
-            bytes_to_write = nbytes;
-        } else {
-            bytes_to_write = bytesend;
-        }
-
-        
+        /* Allocate new block if needed */
         if (inode->direct_blocks[current_block] == -1) {
             int new_block = simplefs_allocDataBlock();
             if (new_block == -1) {
@@ -216,30 +198,31 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
             inode->direct_blocks[current_block] = new_block;
         }
 
-        /* Read the block if it exists, then update its contents */
-      simplefs_readDataBlock(inode->direct_blocks[current_block], temp_block);
-        memcpy(temp_block + block_offset, buf + buffer_offset, bytes_to_write);
+        /* Calculate bytes to write for current block */
+        int bytes_to_write = (nbytes < BLOCKSIZE - block_offset) ? nbytes : (BLOCKSIZE - block_offset);
+
+        /* Write the block */
+        char temp_block[BLOCKSIZE];
+        simplefs_readDataBlock(inode->direct_blocks[current_block], temp_block);
+        memcpy(temp_block + block_offset, buf_ptr, bytes_to_write);
         simplefs_writeDataBlock(inode->direct_blocks[current_block], temp_block);
 
-        /* Update variables for the next iteration */
-        buffer_offset += bytes_to_write;
+        /* Update counters and pointers */
+        buf_ptr += bytes_to_write;
         nbytes -= bytes_to_write;
         inode->file_size += bytes_to_write;
         current_block++;
-        block_offset = 0; 
-        bytesend = BLOCKSIZE;
+        block_offset = 0;  // Offset is zero after the first block
     }
 
     /* Write the updated inode back to disk */
     simplefs_writeInode(inodenum, inode);
-
     free(inode);
-   return 0;
-}
-
+    return 0;
+}   
 /*simplefs_seek: To change offset by a specified value */
 int simplefs_seek(int file_handle, int nseek) {
-	/*  Validate file handle */
+        /*  Validate file handle */
     if (file_handle < 0 || file_handle >= MAX_OPEN_FILES) {
         fprintf(stderr, "Invalid file handle\n");
         return -1;
@@ -254,7 +237,7 @@ int simplefs_seek(int file_handle, int nseek) {
 
     /* calculate new offset */
     int new_offset = offset + nseek;
-    
+
     /* Ensure the offset doesn't go beyond the file's size */
     if (new_offset < 0) {
         /* Offset cannot be negative, set it to 0 */
